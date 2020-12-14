@@ -33,6 +33,29 @@ def move():
         head.sety(y + 20)
 
 
+def up():
+    head.setheading(90)
+    head.forward(100)
+
+def down():
+    head.setheading(270)
+    head.forward(100)
+
+def left():
+    head.setheading(180)
+    head.forward(100)
+
+def right():
+    head.setheading(0)
+    head.forward(100)
+
+window.listen()
+
+window.onkey(up, "Up")  # This will call the up function if the "Left" arrow key is pressed
+window.onkey(down, "Down")
+window.onkey(left, "Left")
+window.onkey(right, "Right")
+
 #maingame loop
 while True:
     window.update()
@@ -40,9 +63,3 @@ while True:
     move()
 
     time.sleep(delay)
-
-
-
-window.mainloop()
-
-
