@@ -1,44 +1,26 @@
-# !/usr/bin/env python3
-# pythong game
-# by Alex lozano
+#!/usr/bin/env python 3
+#snake game for python
+#by Alex Lozano
 
-
-import random
-import time
 import turtle
-from turtle import Turtle
-
-import segment as segment
+import time
+import random
 
 delay = 0.1
 
-
-
-# Screen set up for game
-window = turtle.Screen()
-window.title("Mr. Grub Grub")
-window.bgcolor("black")
-window.setup(width=1000, height=1000)
-window.tracer(0)
-
-#score
+# Score
 score = 0
-high_score: int = 0
+high_score = 0
 
+# Set up the screen
+wn = turtle.Screen()
+wn.title("Mr. Grub Grub")
+wn.bgcolor("black")
+wn.setup(width=600, height=600)
+wn.tracer(0)  # Turns off the screen updates
 
-#turtle writing text
-pen = turtle.Turtle()
-pen.speed(0)
-pen.shape("square")
-pen.color("orange")
-pen.penup()
-pen.hideturtle()
-pen.goto(0, 260)
-pen.write("SCORE: 0  HIGHSCORE: 0", align="center", font=("Courier", 18, "normal"))
-
-# Grub head
-
-head: Turtle = turtle.Turtle()
+# Mr.grub grub head
+head = turtle.Turtle()
 head.speed(0)
 head.shape("triangle")
 head.color("white")
@@ -46,39 +28,46 @@ head.penup()
 head.goto(0, 0)
 head.direction = "stop"
 
-# food for Mr. Grub
+# grub food
 food = turtle.Turtle()
 food.speed(0)
 food.shape("circle")
 food.color("red")
 food.penup()
-food.goto(1, 100)
-food.direction = "up"
+food.goto(0, 100)
 
 segments = []
 
+# Pen
+pen = turtle.Turtle()
+pen.speed(0)
+pen.shape("triangle")
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 260)
+pen.write("Score: 0  High Score: 0", align="center", font=("Courier", 24, "normal"))
 
 
-# Grub body
-grub_body = turtle.Turtle()
-grub_body.speed(0)
-grub_body.shape("triangle")
-grub_body.color("white")
-grub_body.penup()
-segments.append(grub_body)
-
-#increasing score
-score += 23
-
-if score > high_score:
-    high_score = score
-pen.clear()
-pen.write("Score: {}  HIGHSCORE: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
-
-# functions
+# Functions
+def up():
+    if head.direction != "down":
+        head.direction = "up"
 
 
+def down():
+    if head.direction != "up":
+        head.direction = "down"
 
+
+def left():
+    if head.direction != "right":
+        head.direction = "left"
+
+
+def right():
+    if head.direction != "left":
+        head.direction = "right"
 
 
 def move():
@@ -86,107 +75,118 @@ def move():
         y = head.ycor()
         head.sety(y + 20)
 
+    if head.direction == "down":
+        y = head.ycor()
+        head.sety(y - 20)
 
-def up():
+    if head.direction == "left":
+        x = head.xcor()
+        head.setx(x - 20)
 
-         head.setheading(90)
-         head.forward(50)
-
-
-def down():
-
-             head.setheading(270)
-             head.forward(50)
-
-
-def left():
-
-             head.setheading(180)
-             head.forward(50)
+    if head.direction == "right":
+        x = head.xcor()
+        head.setx(x + 20)
 
 
-def right():
+# Keyboard bindings
+wn.listen()
+wn.onkeypress(up, "Up")
+wn.onkeypress(down, "Down")
+wn.onkeypress(left, "Left")
+wn.onkeypress(right, "Right")
 
-            head.setheading(0)
-            head.forward(50)
+# Main game loop
+while True:
+    wn.update()
 
+    # Check for a collision with the border
+    if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
+        time.sleep(1)
+        head.goto(0, 0)
+        head.direction = "stop"
 
-# keyboard bindings
-window.listen()
+        # Hide the segments
+        for segment in segments:
+            segment.goto(1000, 1000)
 
-window.onkey(up, "Up")
-window.onkey(down, "Down")
-window.onkey(left, "Left")
-window.onkey(right, "Right")
+        # Clear the segments list
+        segments.clear()
 
-# maingame loop
+        # Reset the score
+        score = 0
 
-# check for collison
-if head.xcor() > 295 or head.xcor() < -295 or head.ycor() > 295 or head.ycor() < -295:
-    time.sleep(1)
-    head.goto(0, 0)
-    head.direction = "stop"
+        # Reset the delay
+        delay = 0.1
 
-    #reset score
-    score = 0
-pen.clear()
-pen.write("Score: {}  HIGHSCORE: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
+        pen.clear()
+        pen.write("Score: {}  High Score: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
 
-#clearing list of segments
-segments.clear()
+        # Check for a collision with the food
+    if head.distance(food) < 30:
+        # Move the food to a random spot
+        x = random.randint(-290, 290)
+        y = random.randint(-290, 290)
+        food.goto(x, y)
 
-#hiding the segments
-for segments in segments:
-    segment.goto(300, 300)
+        # Add a segment
+        new_segment = turtle.Turtle()
+        new_segment.speed(0)
+        new_segment.shape("triangle")
+        new_segment.color("grey")
+        new_segment.penup()
+        segments.append(new_segment)
 
+        # Shorten the delay
+        delay -= 0.001
 
+        # Increase the score
+        score += 10
 
+        if score > high_score:
+            high_score = score
 
-    while True:
-        window.update()
-        # check for collision for food
-        if head.distance(food) < 35:
-            # moves food to random spot on screen
-            x = random.randint(-290, 290)
-            y = random.randint(-290, 290)
-            food.goto(x, y)
+        pen.clear()
+        pen.write("Score: {}  High Score: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
 
-#scoring system
+        # Move the end segments first in reverse order
+    for index in range(len(segments) - 1, 0, -1):
+        x = segments[index - 1].xcor()
+        y = segments[index - 1].ycor()
+        segments[index].goto(x, y)
 
-
-    # moving the segments with the body and growth with the consumption of food
-for index in range(len(segments) - 1, 0, -1):
-    x = segments[index - 1].xcor()
-    y = segments[index - 1].ycor()
-    segments[index].goto(x, y)
-
-# move segment 0 to head
-if len(segments) <= 0:
-    pass
-else:
-    x = head.xcor()
-    y = head.ycor()
-    segments[0].goto(x, y)
+    # Move segment 0 to where the head is
+    if len(segments) > 0:
+        x = head.xcor()
+        y = head.ycor()
+        segments[0].goto(x, y)
 
     move()
-#colliaions with body
-segments: Turtle
-segment: object
-for segment in segments:
-    if segment.distance(head) < 20:
-        time.sleep(1)
-        head.goto(0,0)
-        head.direction = "stop"
-    # clearing list of segments
-    segments.clear()
 
-    # hiding the segments
+    # Check for head collision with the body segments
     for segment in segments:
-        segment.goto(1000, 1000)
+        if segment.distance(head) < 20:
+            time.sleep(1)
+            head.goto(0, 0)
+            head.direction = "stop"
 
+            # Hide the segments
+            for segment in segments:
+                segment.goto(1000, 1000)
 
+            # Clear the segments list
+            segments.clear()
 
-window.update()
-time.sleep(delay)
+            # Reset the score
+            score = 0
 
-window.mainloop()
+            # Reset the delay
+            delay = 0.1
+
+            # Update the score display
+            pen.clear()
+            pen.write("Score: {}  High Score: {}".format(score, high_score), align="center",
+                      font=("Courier", 24, "normal"))
+
+    time.sleep(delay)
+
+wn.mainloop()
