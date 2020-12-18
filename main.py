@@ -17,7 +17,7 @@ wn = turtle.Screen()
 wn.title("Mr. Grub Grub")
 wn.bgcolor("black")
 wn.setup(width=600, height=600)
-wn.tracer(0)  # Turns off the screen updates
+wn.tracer(0)
 
 # Mr.grub grub head
 head = turtle.Turtle()
@@ -41,8 +41,8 @@ segments = []
 # Pen
 pen = turtle.Turtle()
 pen.speed(0)
-pen.shape("triangle")
-pen.color("white")
+pen.shape("square")
+pen.color("orange")
 pen.penup()
 pen.hideturtle()
 pen.goto(0, 260)
@@ -140,7 +140,7 @@ while True:
         delay -= 0.001
 
         # Increase the score
-        score += 10
+        score += 16
 
         if score > high_score:
             high_score = score
